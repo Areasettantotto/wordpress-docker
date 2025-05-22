@@ -2,8 +2,7 @@
 
 # Environment files
 .env
-.gitignore
-.senza-titolo.png
++senza-titolo.png
 
 # Logs
 logs
