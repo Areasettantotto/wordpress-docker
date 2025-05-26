@@ -28,12 +28,12 @@ export default function Blog() {
         <div className="mt-8 animate-bounce text-yellow-800 text-3xl">→</div>
       </section>
       {/* Articoli */}
-      {paginatedPosts.map(item => (
+      {paginatedPosts.map((item, idx) => (
         <div
           key={item.id}
           className="flex-shrink-0 w-screen h-screen flex items-center justify-center snap-center"
         >
-          <PostItem post={item} />
+          <PostItem post={item} index={idx} total={paginatedPosts.length} />
         </div>
       ))}
     </div>

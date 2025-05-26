@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import axios from "axios";
-export default function PostItem( { post } ){
+export default function PostItem( { post, index, total } ){
 	const [featuredImage, setFeaturedImage] = useState('https://images.pexels.com/photos/270404/pexels-photo-270404.jpeg');
 	const date = new Date(post.date).toLocaleDateString("it-IT", {
 		year: "numeric",
@@ -64,25 +64,45 @@ export default function PostItem( { post } ){
 				>
 					Vai al dettaglio
 				</Link>
-				{/* Freccia per scroll automatico */}
-				<button
-					type="button"
-					aria-label="Vai all'articolo successivo"
-					className="mt-4 animate-bounce text-yellow-700 text-3xl hover:scale-125 transition-transform"
-					onClick={() => {
-						// Scrolla al prossimo articolo (prossimo elemento con snap-center)
-						const parent = document.querySelector('.snap-x');
-						if (parent) {
-							const current = parent.querySelector('.snap-center:focus-within, .snap-center:focus, .snap-center:hover, .snap-center');
-							let next = current?.nextElementSibling;
-							// Salta eventuali spazi o nodi non visibili
-							while (next && next.offsetParent === null) next = next.nextElementSibling;
-							if (next) next.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-						}
-					}}
-				>
-					<span className="block">→</span>
-				</button>
+				{/* Freccia per scroll automatico avanti e indietro */}
+				<div className="flex flex-row gap-4 justify-center mt-4">
+					{/* Freccia indietro */}
+					<button
+						type="button"
+						aria-label="Torna all'articolo precedente"
+						className={`animate-bounce text-yellow-700 text-3xl hover:scale-125 transition-transform rotate-180 ${index === 0 ? 'text-gray-400 cursor-not-allowed opacity-50' : ''}`}
+						onClick={() => {
+							if (index === 0) return;
+							const parent = document.querySelector('.snap-x');
+							if (parent) {
+								const all = Array.from(parent.querySelectorAll('.snap-center'));
+								const target = all[index]; // -1 per articolo precedente, +1 per offset slide benvenuto
+								if (target) target.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+							}
+						}}
+						disabled={index === 0}
+					>
+						<span className="block">→</span>
+					</button>
+					{/* Freccia avanti */}
+					<button
+						type="button"
+						aria-label="Vai all'articolo successivo"
+						className={`animate-bounce text-yellow-700 text-3xl hover:scale-125 transition-transform ${index === total - 1 ? 'text-gray-400 cursor-not-allowed opacity-50' : ''}`}
+						onClick={() => {
+							if (index === total - 1) return;
+							const parent = document.querySelector('.snap-x');
+							if (parent) {
+								const all = Array.from(parent.querySelectorAll('.snap-center'));
+								const target = all[index + 2]; // +1 per offset slide benvenuto, +1 per articolo successivo
+								if (target) target.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+							}
+						}}
+						disabled={index === total - 1}
+					>
+						<span className="block">→</span>
+					</button>
+				</div>
 			</div>
 		</div>
 	);
