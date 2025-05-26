@@ -52,6 +52,9 @@ export default function PostItem( { post } ){
 					{post._embedded?.author?.[0]?.name || 'Sconosciuto'}
 					{" - "}
 					{date}
+					{typeof post.id === 'number' && (
+						<CommentCount postId={post.id} />
+					)}
 				</div>
 				<div className="text-gray-700 text-base md:text-lg post-excerpt mb-2" dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }} />
 				<Link
@@ -83,4 +86,17 @@ export default function PostItem( { post } ){
 			</div>
 		</div>
 	);
+}
+
+function CommentCount({ postId }) {
+  const [count, setCount] = useState(null);
+  useEffect(() => {
+    axios.get(`/wp-json/wp/v2/comments?post=${postId}&status=approve`).then(res => {
+      setCount(Array.isArray(res.data) ? res.data.length : 0);
+    }).catch(() => setCount(0));
+  }, [postId]);
+  if (count === null) return null;
+  return (
+    <span className="text-yellow-700 font-semibold"> - {count} commenti</span>
+  );
 }

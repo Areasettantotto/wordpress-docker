@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import PostItem from "./PostItem.jsx";
-const url = '/wp-json/wp/v2/posts?_fields=id,slug,date,title,excerpt,content,link,_links&_embed=author,wp:featuredmedia&per_page=100';
+const baseUrl = import.meta.env.VITE_API_BASE_URL || '/wp-json/wp/v2';
+const url = `${baseUrl}/posts?_fields=id,slug,date,title,excerpt,content,link,_links&_embed=author,wp:featuredmedia,comments&per_page=100`;
 export default function Blog() {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
